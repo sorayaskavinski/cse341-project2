@@ -1,0 +1,19 @@
+{
+  "name": "cse341-project2",
+  "version": "1.0.0",
+  "description": "Project week 3 and 4",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sorayaskavinski/cse341-project2.git"
+  },
+  "author": "Soraya Skavinski",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sorayaskavinski/cse341-project2/issues"
+  },
+  "homepage": "https://github.com/sorayaskavinski/cse341-project2#readme"
+}
