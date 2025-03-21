@@ -1,0 +1,232 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "title": "Contacts API",
+      "description": "API for managing clients and products",
+      "version": "1.0.0"
+    },
+    "host": "localhost:3001",
+    "basePath": "/",
+    "schemes": ["http"],
+    "paths": {
+      "/clients/": {
+        "get": {
+          "tags": ["clients"],
+          "description": "Retrieve all clients",
+          "produces": ["application/json"],
+          "responses": {
+            "200": { "description": "OK" },
+            "500": { "description": "Internal Server Error" }
+          }
+        },
+        "post": {
+          "tags": ["clients"],
+          "description": "Create a new client",
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "required": ["firstname", "lastname", "phonenumber"],
+                "properties": {
+                  "firstname": { "example": "any" },
+                  "lastname": { "example": "any" },
+                  "phonenumber": { "example": "any" },
+                  "address": { "example": "any" },
+                  "city": { "example": "any" },
+                  "state": { "example": "any" },
+                  "zipcode": { "example": "any" }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "201": { "description": "Client created successfully" },
+            "500": { "description": "Internal Server Error" }
+          }
+        }
+      },
+      "/clients/{id}": {
+        "get": {
+          "tags": ["clients"],
+          "description": "Retrieve a specific client",
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": { "description": "OK" },
+            "500": { "description": "Internal Server Error" }
+          }
+        },
+        "put": {
+          "tags": ["clients"],
+          "description": "Update an existing client",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "firstname": { "example": "any" },
+                  "lastname": { "example": "any" },
+                  "phonenumber": { "example": "any" },
+                  "address": { "example": "any" },
+                  "city": { "example": "any" },
+                  "state": { "example": "any" },
+                  "zipcode": { "example": "any" }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": { "description": "Client updated successfully" },
+            "500": { "description": "Internal Server Error" }
+          }
+        },
+        "delete": {
+          "tags": ["clients"],
+          "description": "Delete a client",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "204": { "description": "No Content" },
+            "500": { "description": "Internal Server Error" }
+          }
+        }
+      },
+      "/products": {
+        "get": {
+          "tags": ["products"],
+          "summary": "Get all products",
+          "description": "Retrieve the list of all products",
+          "produces": ["application/json"],
+          "responses": {
+            "200": { "description": "Successfully retrieved products" },
+            "500": { "description": "Internal Server Error" }
+          }
+        },
+        "post": {
+          "tags": ["products"],
+          "summary": "Create a new product",
+          "description": "Add a new product to the database",
+          "parameters": [
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "required": ["brand", "model", "color", "price", "item"],
+                "properties": {
+                  "brand": { "type": "string", "example": "any" },
+                  "model": { "type": "string", "example": "any" },
+                  "color": { "type": "string", "example": "any" },
+                  "price": { "type": "number", "example": 111 },
+                  "item": { "type": "string", "example": "any" }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "201": { "description": "Product created successfully" },
+            "500": { "description": "Internal Server Error" }
+          }
+        }
+      },
+      "/products/{id}": {
+        "get": {
+          "tags": ["products"],
+          "summary": "Get a product by ID",
+          "description": "Retrieve a product based on its ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "produces": ["application/json"],
+          "responses": {
+            "200": { "description": "Successfully retrieved product" },
+            "404": { "description": "Product not found" },
+            "500": { "description": "Internal Server Error" }
+          }
+        },
+        "put": {
+          "tags": ["products"],
+          "summary": "Update a product",
+          "description": "Modify an existing product",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            },
+            {
+              "name": "body",
+              "in": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "brand": { "type": "string", "example": "any" },
+                  "model": { "type": "string", "example": "any" },
+                  "color": { "type": "string", "example": "any" },
+                  "price": { "type": "number", "example": 111 },
+                  "item": { "type": "string", "example": "any" }
+                }
+              }
+            }
+          ],
+          "responses": {
+            "200": { "description": "Product updated successfully" },
+            "404": { "description": "Product not found" },
+            "500": { "description": "Internal Server Error" }
+          }
+        },
+        "delete": {
+          "tags": ["products"],
+          "summary": "Delete a product",
+          "description": "Remove a product from the database",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "204": { "description": "No Content" },
+            "404": { "description": "Product not found" },
+            "500": { "description": "Internal Server Error" }
+          }
+        }
+      }
+    }
+  }
+  

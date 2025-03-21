@@ -6,10 +6,10 @@ router.get('/', productsController.getAll);
 
 router.get('/:id', productsController.getSingle);
 
-router.post('/', productsController.createContact);
+router.post('/', productsController.createProduct);
 
-router.put('/:id', productsController.updateContact);
+router.put('/:id', productsController.updateProduct);
 
-router.delete('/:id', productsController.deleteContact);
+router.delete('/:id', productsController.deleteProduct);
 
 module.exports = router;
