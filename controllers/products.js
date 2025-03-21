@@ -1,4 +1,5 @@
 const mongodb = require('../data/database');
+
 const ObjectId = require('mongodb').ObjectId;
 
 const getAll = async (req, res) => {
@@ -16,7 +17,7 @@ const getAll = async (req, res) => {
 const getSingle = async (req, res) => {
     try {
         //#swagger.tags=['products']
-        const db = mongodb.getDatabase();
+       
         const productID = new ObjectId(req.params.id);
         const result = await mongodb.getDatabase().db().collection('products').findOne({ _id: productID });
 
@@ -33,7 +34,7 @@ const getSingle = async (req, res) => {
 
 const createProduct = async (req, res) => {
     //#swagger.tags = ['products']
-    const db = mongodb.getDatabase();
+    
     const { brand, model, color, price, item } = req.body;
     if (!brand || !model || !color || !price || !item) {
         return res.status(400).json({ error: "All fields are required!" });
@@ -54,7 +55,7 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     //#swagger.tags=['products']
-    const db = mongodb.getDatabase();
+    
     const { brand, model, color, price, item } = req.body;
     if (!brand || !model || !color || !price || !item) {
         return res.status(400).json({ error: "All fields are required!" });
@@ -76,7 +77,7 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => { 
     try {
         //#swagger.tags=['products']  
-        const db = mongodb.getDatabase();
+        
         const productID = new ObjectId(req.params.id);
         const response = await mongodb.getDatabase().db().collection('products').deleteOne({ _id: productID });
 
