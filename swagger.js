@@ -6,12 +6,12 @@ const doc = {
         description: 'Contacts Api'
     },
     
-    host: 'localhost:3000',
+    host: 'localhost:3001',
     schemes: ['http','https']
 };
 
 const outputFile = './swagger.json';
 const endpointsFiles = ['./routes/index.js'];
 
-//this will generate Swagger
+
 swaggerAutogen(outputFile, endpointsFiles, doc);

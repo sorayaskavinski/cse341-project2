@@ -1,0 +1,21 @@
+#get all 
+GET http://localhost:3001/clients
+
+###get Single
+
+GET http://localhost:3000/contacts/67cce3724822098fed477bfb
+
+###CREATE a contact POST http://localhost:3000/contacts Content-Type: application/json
+
+{
+"firstName": "Janet", "lastName": "Dona", "email": "janetbeautiful@gmail.com", "favoriteColor": "green", "birthday": "sep 9th"
+}
+
+###put contact PUT http://localhost:3000/contacts/67cce3724822098fed477bfb HTTP/1.1 Content-Type: application/json
+
+{
+"firstName": "Sheiula", "lastName": "Dona", "email": "donasheila@gmail.com", "favoriteColor": "yellow", "birthday": "Nov 29th"
+}
+
+###Delete 
+DELETE http://localhost:3001/ HTTP/1.1
