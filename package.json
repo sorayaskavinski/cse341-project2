@@ -18,6 +18,7 @@
   "homepage": "https://github.com/sorayaskavinski/cse341-project2#readme",
   "dependencies": {
     "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "mongodb": "^6.15.0",
     "rest": "^2.0.0",
