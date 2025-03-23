@@ -16,8 +16,7 @@ const getAll = async (req, res) => {
 
 const getSingle = async (req, res) => {
     try {
-        //#swagger.tags=['products']
-       
+        //#swagger.tags=['products']       
         const productID = new ObjectId(req.params.id);
         const result = await mongodb.getDatabase().collection('products').findOne({ _id: productID });
 
@@ -43,11 +42,9 @@ const createProduct = async (req, res) => {
             price: req.body.price, 
             item: req.body.item 
         };
-       const response = await mongodb.getDatabase().collection('products').createOne({_id:productID}, {$set:product});
+       const response = await mongodb.getDatabase().collection('products').insertOne(product);
            if (response.acknowledged){
-            const result = await mongodb.getDatabase().collection('products').findOne({ _id: productID });
-                res.setHeader('Content-Type', 'application/json');
-                res.status(200).send(result);
+                res.status(200).send('Product created Successfully');
            }
            else{
                res.status(500).json(response.error || 'Some error ocurred while opening the product.');
@@ -68,7 +65,7 @@ const updateProduct = async (req, res) => {
             price: req.body.price, 
             item: req.body.item 
         };
-       const response = await mongodb.getDatabase().collection('products').updateOne(product);
+       const response = await mongodb.getDatabase().collection('products').updateOne({_id:productID}, {$set: product});
            if (response.acknowledged){
                 const result = await mongodb.getDatabase().collection('products').findOne({ _id: productID });
                 res.setHeader('Content-Type', 'application/json');
@@ -85,6 +82,9 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => { 
     try {
         //#swagger.tags=['products']  
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid product ID format" });
+        }
         
         const productID = new ObjectId(req.params.id);
         const response = await mongodb.getDatabase().collection('products').deleteOne({ _id: productID });

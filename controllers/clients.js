@@ -41,7 +41,11 @@ const createClient = async (req, res) => {
 
     const response = await mongodb.getDatabase().collection('clients').insertOne(client);
         if (response.acknowledged){
-            res.status(204).send();
+            res.status(200).send('Client created Successfully');
+            const result = await mongodb.getDatabase().collection('clients').findOne({ _id: clientID });
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).json(result)
+
         }
         else{
             res.status(500).json(response.error || 'Some error ocurred while opening the client.');
@@ -80,7 +84,12 @@ const updateClient = async (req, res) => {
 
 const deleteClient = async (req, res) => { 
     try {
-        //#swagger.tags=['clients']         
+        //#swagger.tags=['clients']  
+
+        if (!ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "Invalid client ID format" });
+        }
+
         const clientID = new ObjectId(req.params.id);
         const response = await mongodb.getDatabase().collection('clients').deleteOne({ _id: clientID });
 
@@ -88,11 +97,13 @@ const deleteClient = async (req, res) => {
             return res.status(404).json({ error: "Client not found" });
         }
 
-        res.status(200).json({ message: "Client deleted successfully" });
+        res.status(200).json({ message: "Client deleted successfully", clientId: req.params.id });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ error: "Internal Server Error", details: err.message });
     }
 };
+
+
 module.exports = {
     getAll,
     getSingle,
