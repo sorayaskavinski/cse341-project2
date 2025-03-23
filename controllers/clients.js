@@ -6,7 +6,7 @@ const getAll = async (req, res) => {
     try {
         //#swagger.tags=['clients']
        
-        const result = await mongodb.getDatabase().db().collection('clients').find().toArray();
+        const result = await mongodb.getDatabase().collection('clients').find().toArray();
         res.setHeader('Content-Type', 'application/json');
         res.status(200).json(result);
     } catch (err) {
@@ -18,7 +18,7 @@ const getSingle = async (req, res) => {
     try {
         //#swagger.tags=['clients']        
         const clientID = new ObjectId(req.params.id);
-        const result = await mongodb.getDatabase().db().collection('clients').findOne({ _id: clientID });            
+        const result = await mongodb.getDatabase().collection('clients').findOne({ _id: clientID });            
         res.setHeader('Content-Type', 'application/json');
         res.status(200).json(result);
     } catch (err) {
@@ -27,43 +27,52 @@ const getSingle = async (req, res) => {
 };
 
 const createClient = async (req, res) => {
-    //#swagger.tags=['clients']   
-    const { firstname, lastname, phonenumber, address, city, state, zipcode } = req.body;
-    
-    if (!firstname || !lastname || !phonenumber || !address || !city || !state || !zipcode) {
-        return res.status(400).json({ error: "All fields are required!" });
-    }
+    //#swagger.tags=['clients']
+    const clientID = new ObjectId(req.params.id);
+    const client ={
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        phonenumber: req.body.phonenumber,
+        address: req.body.address,
+        city: req.body.city,
+        state: req.body.state,
+        zipcode: req.body.zipcode
+    };
 
-    const client = { firstname, lastname, phonenumber, address, city, state, zipcode };
-    try {
-        const response = await mongodb.getDatabase().db().collection('clients').insertOne(client);
-        if (response.acknowledged) {
-            res.status(201).json({ message: "Client created successfully!" });
-        } else {
-            res.status(500).json({ error: "Failed to create client." });
+    const response = await mongodb.getDatabase().collection('clients').insertOne(client);
+        if (response.acknowledged){
+            res.status(204).send();
         }
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
+        else{
+            res.status(500).json(response.error || 'Some error ocurred while opening the client.');
+        }        
 };
 
 const updateClient = async (req, res) => {
     //#swagger.tags=['clients']
-    const { firstname, lastname, phonenumber, address, city, state, zipcode } = req.body;
-    
-    if (!firstname || !lastname || !phonenumber || !address || !city || !state || !zipcode) {
-        return res.status(400).json({ error: "All fields are required!" });
-    }
-
-    const client = { firstname, lastname, phonenumber, address, city, state, zipcode };
-    try {
-        const response = await mongodb.getDatabase().db().collection('clients').replaceOne(client);
-        if (response.acknowledged) {
-            res.status(201).json({ message: "Client updated  successfully!" });
-        } else {
-            res.status(500).json({ error: "Failed to update client." });
+    try{
+        const clientID = new ObjectId(req.params.id);
+        const client ={
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            phonenumber: req.body.phonenumber,
+            address: req.body.address,
+            city: req.body.city,
+            state: req.body.state,
+            zipcode: req.body.zipcode
+        };
+        
+        const response = await mongodb.getDatabase().collection('clients').updateOne({ _id: clientID }, { $set: client });
+        if (response.acknowledged){
+            const result = await mongodb.getDatabase().collection('clients').findOne({ _id: clientID });
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).json(result);
         }
-    } catch (err) {
+        else{
+            res.status(500).json(response.error || 'Some error ocurred while opening the client.');
+        } 
+    }
+    catch (err) {
         res.status(500).json({ error: err.message });
     }
 };
@@ -71,10 +80,9 @@ const updateClient = async (req, res) => {
 
 const deleteClient = async (req, res) => { 
     try {
-        //#swagger.tags=['clients'] 
-        
-        const productID = new ObjectId(req.params.id);
-        const response = await mongodb.getDatabase().db().collection('clients').deleteOne({ _id: clientID });
+        //#swagger.tags=['clients']         
+        const clientID = new ObjectId(req.params.id);
+        const response = await mongodb.getDatabase().collection('clients').deleteOne({ _id: clientID });
 
         if (response.deletedCount === 0) {
             return res.status(404).json({ error: "Client not found" });

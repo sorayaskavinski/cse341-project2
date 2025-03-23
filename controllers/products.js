@@ -6,7 +6,7 @@ const getAll = async (req, res) => {
     try {
         //#swagger.tags=['products']
         const db = mongodb.getDatabase();
-        const result = await mongodb.getDatabase().db().collection('products').find().toArray();
+        const result = await mongodb.getDatabase().collection('products').find().toArray();
         res.setHeader('Content-Type', 'application/json');
         res.status(200).json(result);
     } catch (err) {
@@ -19,7 +19,7 @@ const getSingle = async (req, res) => {
         //#swagger.tags=['products']
        
         const productID = new ObjectId(req.params.id);
-        const result = await mongodb.getDatabase().db().collection('products').findOne({ _id: productID });
+        const result = await mongodb.getDatabase().collection('products').findOne({ _id: productID });
 
         if (!result) {
             return res.status(404).json({ error: "Product not found" });
@@ -34,42 +34,50 @@ const getSingle = async (req, res) => {
 
 const createProduct = async (req, res) => {
     //#swagger.tags = ['products']
-    
-    const { brand, model, color, price, item } = req.body;
-    if (!brand || !model || !color || !price || !item) {
-        return res.status(400).json({ error: "All fields are required!" });
-    }
-
-    const product = { brand, model, color, price, item };
-        try {
-        const response = await mongodb.getDatabase().db().collection('products').insertOne(product);
-        if (response.acknowledged) {
-            res.status(201).json({ message: "Product created successfully!" });
-        } else {
-            res.status(500).json({ error: "Failed to create product." });
-        }
-    } catch (err) {
+    try{
+        const productID = new ObjectId(req.params.id);
+        const product = { 
+            brand: req.body.brand,
+            model: req.body.model, 
+            color: req.body.color, 
+            price: req.body.price, 
+            item: req.body.item 
+        };
+       const response = await mongodb.getDatabase().collection('products').createOne({_id:productID}, {$set:product});
+           if (response.acknowledged){
+            const result = await mongodb.getDatabase().collection('products').findOne({ _id: productID });
+                res.setHeader('Content-Type', 'application/json');
+                res.status(200).send(result);
+           }
+           else{
+               res.status(500).json(response.error || 'Some error ocurred while opening the product.');
+           }
+    } catch(err){
         res.status(500).json({ error: err.message });
     }
-};
+   };
 
 const updateProduct = async (req, res) => {
     //#swagger.tags=['products']
-    
-    const { brand, model, color, price, item } = req.body;
-    if (!brand || !model || !color || !price || !item) {
-        return res.status(400).json({ error: "All fields are required!" });
-    }
-
-    const prodcut = { brand, model, color, price, item };
-    try {
-        const response = await mongodb.getDatabase().db().collection('products').replaceOne(prodcut);
-        if (response.acknowledged) {
-            res.status(201).json({ message: "Product updated  successfully!" });
-        } else {
-            res.status(500).json({ error: "Failed to update product." });
-        }
-    } catch (err) {
+    try{
+        const productID = new ObjectId(req.params.id);
+        const product = { 
+            brand: req.body.brand,
+            model: req.body.model, 
+            color: req.body.color, 
+            price: req.body.price, 
+            item: req.body.item 
+        };
+       const response = await mongodb.getDatabase().collection('products').updateOne(product);
+           if (response.acknowledged){
+                const result = await mongodb.getDatabase().collection('products').findOne({ _id: productID });
+                res.setHeader('Content-Type', 'application/json');
+                res.status(200).json(result);
+           }
+           else{
+               res.status(500).json(response.error || 'Some error ocurred while opening the product.');
+           } 
+    }catch(err) {
         res.status(500).json({ error: err.message });
     }
 };
@@ -79,7 +87,7 @@ const deleteProduct = async (req, res) => {
         //#swagger.tags=['products']  
         
         const productID = new ObjectId(req.params.id);
-        const response = await mongodb.getDatabase().db().collection('products').deleteOne({ _id: productID });
+        const response = await mongodb.getDatabase().collection('products').deleteOne({ _id: productID });
 
         if (response.deletedCount === 0) {
             return res.status(404).json({ error: "Product not found" });
