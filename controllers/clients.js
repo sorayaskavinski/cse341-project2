@@ -29,6 +29,11 @@ const getSingle = async (req, res) => {
 const createClient = async (req, res) => {
     //#swagger.tags=['clients']
     try {
+        // Force an error for testing 500 response
+        if (!req.body.firstname || !req.body.lastname) {
+            throw new Error('Missing required fields: firstname or lastname');
+        }
+
         const client = {
             firstname: req.body.firstname,
             lastname: req.body.lastname,
@@ -42,15 +47,15 @@ const createClient = async (req, res) => {
         const response = await mongodb.getDatabase().collection('clients').insertOne(client);
         
         if (response.acknowledged) {
-            // Fetch the newly created client
             const result = await mongodb.getDatabase().collection('clients').findOne({ _id: response.insertedId });
 
             res.setHeader('Content-Type', 'application/json');
-            return res.status(201).json(result); // 201 for resource creation
+            return res.status(201).json(result);
         } else {
             return res.status(500).json({ error: 'Some error occurred while creating the client.' });
         }
     } catch (error) {
+        console.error('Internal Server Error:', error.message); // Logs error in console
         return res.status(500).json({ error: error.message || 'Internal Server Error' });
     }
 };
