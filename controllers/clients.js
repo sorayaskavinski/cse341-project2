@@ -84,8 +84,8 @@ const updateClient = async (req, res) => {
             res.status(500).json(response.error || 'Some error ocurred while opening the client.');
         } 
     }
-    catch (err) {
-        res.status(500).json({ error: err.message });
+    catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };
 

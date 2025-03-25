@@ -35,7 +35,7 @@ const createProduct = async (req, res) => {
     //#swagger.tags = ['products']
     try{
         if (!req.body.price || !req.body.model || !req.body.brand || !req.body.item) {
-            throw new Error('Missing required fields: firstname or lastname');
+            throw new Error('Missing required fields: price, brand, item');
         }
         
         const product = { 
@@ -80,7 +80,7 @@ const updateProduct = async (req, res) => {
            else{
                res.status(500).json(response.error || 'Some error ocurred while opening the product.');
            } 
-    }catch(err) {
+    }catch(error) {
         res.status(500).json({ error: err.message });
     }
 };
