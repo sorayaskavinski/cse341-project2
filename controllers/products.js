@@ -34,7 +34,10 @@ const getSingle = async (req, res) => {
 const createProduct = async (req, res) => {
     //#swagger.tags = ['products']
     try{
-        const productID = new ObjectId(req.params.id);
+        if (!req.body.price || !req.body.model || !req.body.brand || !req.body.item) {
+            throw new Error('Missing required fields: firstname or lastname');
+        }
+        
         const product = { 
             brand: req.body.brand,
             model: req.body.model, 
@@ -44,13 +47,16 @@ const createProduct = async (req, res) => {
         };
        const response = await mongodb.getDatabase().collection('products').insertOne(product);
            if (response.acknowledged){
-                res.status(200).send('Product created Successfully');
+                const result = await mongodb.getDatabase().collection('products').findOne({ _id: response.insertedId });
+                res.setHeader('Content-Type', 'application/json');
+                return res.status(201).json(result);
            }
            else{
-               res.status(500).json(response.error || 'Some error ocurred while opening the product.');
+            return res.status(500).json({ error: 'Some error occurred while creating the product.' });
            }
-    } catch(err){
-        res.status(500).json({ error: err.message });
+    } catch(error){
+        console.error('Internal Server Error:', error.message); 
+        return res.status(500).json({ error: error.message || 'Internal Server Error' });
     }
    };
 
