@@ -62,9 +62,14 @@ const createClient = async (req, res) => {
 
 const updateClient = async (req, res) => {
     //#swagger.tags=['clients']
-    try{
+    try {
         const clientID = new ObjectId(req.params.id);
-        const client ={
+        
+        if (!req.body.firstname || !req.body.lastname || !req.body.phonenumber) {
+            return res.status(400).json({ error: "Missing required fields: firstname, lastname, and phonenumber are mandatory." });
+        }
+
+        const client = {
             firstname: req.body.firstname,
             lastname: req.body.lastname,
             phonenumber: req.body.phonenumber,
@@ -73,21 +78,25 @@ const updateClient = async (req, res) => {
             state: req.body.state,
             zipcode: req.body.zipcode
         };
+
+        const response = await mongodb.getDatabase().collection('clients').updateOne(
+            { _id: clientID }, 
+            { $set: client }
+        );
         
-        const response = await mongodb.getDatabase().collection('clients').updateOne({ _id: clientID }, { $set: client });
-        if (response.acknowledged){
+        if (response.modifiedCount > 0) {
             const result = await mongodb.getDatabase().collection('clients').findOne({ _id: clientID });
             res.setHeader('Content-Type', 'application/json');
             res.status(200).json(result);
+        } else {
+            res.status(400).json({ error: "No client was updated. Check if the ID exists or if the data is unchanged." });
         }
-        else{
-            res.status(500).json(response.error || 'Some error ocurred while opening the client.');
-        } 
-    }
-    catch (error) {
+
+    } catch (error) {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 
 const deleteClient = async (req, res) => { 

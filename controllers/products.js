@@ -60,10 +60,15 @@ const createProduct = async (req, res) => {
     }
    };
 
-const updateProduct = async (req, res) => {
+   const updateProduct = async (req, res) => {
     //#swagger.tags=['products']
-    try{
+    try {
         const productID = new ObjectId(req.params.id);
+
+        if (!req.body.brand || !req.body.model || !req.body.price) {
+            return res.status(400).json({ error: "Missing required fields" });
+        }
+
         const product = { 
             brand: req.body.brand,
             model: req.body.model, 
@@ -71,19 +76,25 @@ const updateProduct = async (req, res) => {
             price: req.body.price, 
             item: req.body.item 
         };
-       const response = await mongodb.getDatabase().collection('products').updateOne({_id:productID}, {$set: product});
-           if (response.acknowledged){
-                const result = await mongodb.getDatabase().collection('products').findOne({ _id: productID });
-                res.setHeader('Content-Type', 'application/json');
-                res.status(200).json(result);
-           }
-           else{
-               res.status(500).json(response.error || 'Some error ocurred while opening the product.');
-           } 
-    }catch(error) {
-        res.status(500).json({ error: err.message });
+
+        const response = await mongodb.getDatabase().collection('products').updateOne(
+            { _id: productID }, 
+            { $set: product }
+        );
+
+        if (response.modifiedCount > 0) {
+            const result = await mongodb.getDatabase().collection('products').findOne({ _id: productID });
+            res.setHeader('Content-Type', 'application/json');
+            res.status(200).json(result);
+        } else {
+            res.status(400).json({ error: "No product was updated. Check if the ID exists or if the data is incorrect." });
+        }
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 };
+
 
 const deleteProduct = async (req, res) => { 
     try {
