@@ -28,28 +28,31 @@ const getSingle = async (req, res) => {
 
 const createClient = async (req, res) => {
     //#swagger.tags=['clients']
-    const clientID = new ObjectId(req.params.id);
-    const client ={
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        phonenumber: req.body.phonenumber,
-        address: req.body.address,
-        city: req.body.city,
-        state: req.body.state,
-        zipcode: req.body.zipcode
-    };
+    try {
+        const client = {
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            phonenumber: req.body.phonenumber,
+            address: req.body.address,
+            city: req.body.city,
+            state: req.body.state,
+            zipcode: req.body.zipcode
+        };
 
-    const response = await mongodb.getDatabase().collection('clients').insertOne(client);
-        if (response.acknowledged){
-            res.status(200).send('Client created Successfully');
-            const result = await mongodb.getDatabase().collection('clients').findOne({ _id: clientID });
+        const response = await mongodb.getDatabase().collection('clients').insertOne(client);
+        
+        if (response.acknowledged) {
+            // Fetch the newly created client
+            const result = await mongodb.getDatabase().collection('clients').findOne({ _id: response.insertedId });
+
             res.setHeader('Content-Type', 'application/json');
-            res.status(200).json(result)
-
+            return res.status(201).json(result); // 201 for resource creation
+        } else {
+            return res.status(500).json({ error: 'Some error occurred while creating the client.' });
         }
-        else{
-            res.status(500).json(response.error || 'Some error ocurred while opening the client.');
-        }        
+    } catch (error) {
+        return res.status(500).json({ error: error.message || 'Internal Server Error' });
+    }
 };
 
 const updateClient = async (req, res) => {
