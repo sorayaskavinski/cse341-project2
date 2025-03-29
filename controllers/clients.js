@@ -4,13 +4,12 @@ const ObjectId = require('mongodb').ObjectId;
 
 const getAll = async (req, res) => {
     try {
-        //#swagger.tags=['clients']
-       
+        //#swagger.tags=['clients']       
         const result = await mongodb.getDatabase().collection('clients').find().toArray();
         res.setHeader('Content-Type', 'application/json');
         res.status(200).json(result);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+    } catch (error) {
+        res.status(500).json('Some error occured while uploading the client');
     }
 };
 
@@ -21,18 +20,14 @@ const getSingle = async (req, res) => {
         const result = await mongodb.getDatabase().collection('clients').findOne({ _id: clientID });            
         res.setHeader('Content-Type', 'application/json');
         res.status(200).json(result);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+    } catch (error) {
+        res.status(500).json('Some error occured while uploading the client');
     }
 };
 
 const createClient = async (req, res) => {
     //#swagger.tags=['clients']
-    try {
-        // Force an error for testing 500 response
-        if (!req.body.firstname || !req.body.lastname) {
-            throw new Error('Missing required fields: firstname or lastname');
-        }
+    try {        
 
         const client = {
             firstname: req.body.firstname,
@@ -50,24 +45,20 @@ const createClient = async (req, res) => {
             const result = await mongodb.getDatabase().collection('clients').findOne({ _id: response.insertedId });
 
             res.setHeader('Content-Type', 'application/json');
-            return res.status(201).json(result);
+            return res.status(200).json(result);
         } else {
-            return res.status(500).json({ error: 'Some error occurred while creating the client.' });
+            return res.status(500).json('Some error occurred while creating the client.');
         }
     } catch (error) {
-        console.error('Internal Server Error:', error.message); // Logs error in console
-        return res.status(500).json({ error: error.message || 'Internal Server Error' });
+        console.error('Some error occurred while creating the client.', error.message); 
+        return res.status(500).json('Some error occurred while creating the client.');
     }
 };
 
 const updateClient = async (req, res) => {
     //#swagger.tags=['clients']
     try {
-        const clientID = new ObjectId(req.params.id);
-        
-        if (!req.body.firstname || !req.body.lastname || !req.body.phonenumber) {
-            return res.status(400).json({ error: "Missing required fields: firstname, lastname, and phonenumber are mandatory." });
-        }
+        const clientID = new ObjectId(req.params.id);      
 
         const client = {
             firstname: req.body.firstname,
@@ -89,11 +80,11 @@ const updateClient = async (req, res) => {
             res.setHeader('Content-Type', 'application/json');
             res.status(200).json(result);
         } else {
-            res.status(400).json({ error: "No client was updated. Check if the ID exists or if the data is unchanged." });
+            res.status(500).json('Some error occurred while updating the client.');
         }
 
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json('Some error occurred while updating the client.');
     }
 };
 
@@ -104,7 +95,7 @@ const deleteClient = async (req, res) => {
         //#swagger.tags=['clients']  
 
         if (!ObjectId.isValid(req.params.id)) {
-            return res.status(400).json({ error: "Invalid client ID format" });
+            return res.status(402).json({ error: "Invalid client ID format" });
         }
 
         const clientID = new ObjectId(req.params.id);
@@ -115,8 +106,8 @@ const deleteClient = async (req, res) => {
         }
 
         res.status(200).json({ message: "Client deleted successfully", clientId: req.params.id });
-    } catch (err) {
-        res.status(500).json({ error: "Internal Server Error", details: err.message });
+    } catch (error) {
+        res.status(500).json('Some error occurred while deleting the client.');
     }
 };
 

@@ -14,8 +14,8 @@ const initDb = (callback) => {
             database = client.db('project2');
             callback(null, database);
         })
-        .catch((err) => {
-            callback(err);
+        .catch((error) => {
+            callback(error);
         });
 };
 
