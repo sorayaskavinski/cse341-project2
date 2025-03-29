@@ -3,7 +3,7 @@ GET http://localhost:3001/products
 
 ###get Single
 
-GET http://localhost:3001/products/67dd502dd3c968287330dd15
+GET http://localhost:3001/products/67dd50c5d3c968287330dd16
 
 
 ###CREATE 
@@ -11,7 +11,7 @@ POST http://localhost:3001/products HTTP/1.1
 Content-Type: application/json
 
 {
-  "brand": "Samsung",
+  "brand": "jason",
   "model": "1235Samsung 5.G",
   "color": "black",
   "price": "299.99",
@@ -19,7 +19,7 @@ Content-Type: application/json
 }
 
 ###put contact 
-PUT http://localhost:3001/products/67dd502dd3c968287330dd15
+PUT http://localhost:3001/products/67dd50c5d3c968287330dd16
 Content-Type: application/json
 
 {
@@ -31,4 +31,4 @@ Content-Type: application/json
 }
 
 ###Delete 
-DELETE http://localhost:3001/products/67dd502dd3c968287330dd15
+DELETE http://localhost:3001/products/67dd50c5d3c968287330dd16
