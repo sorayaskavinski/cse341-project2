@@ -5,8 +5,8 @@ const doc = {
         title: 'Clients API',
         description: 'API to manage clients and products'
     },
-    host: process.env.HOST || 'http://localhost:3001',
-    schemes: ['http','https']
+    host: process.env.HOST || 'https://cse341-project2-0dx7.onrender.com',
+    schemes: ['https']
     
 };
 

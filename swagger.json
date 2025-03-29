@@ -5,9 +5,9 @@
       "description": "API for managing clients and products",
       "version": "1.0.0"
     },
-    "host": "http://localhost:3001",
+    "host": "cse341-project2-0dx7.onrender.com",
     "basePath": "/",
-    "schemes": ["http","https"],
+    "schemes": ["https"],
     "paths": {
       "/clients/": {
         "get": {
